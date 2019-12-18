@@ -1,0 +1,158 @@
+/***************
+ * BinaryTreeNode class already given - 
+ * 
+class BinaryTreeNode<T> {
+	T data;
+	BinaryTreeNode<T> left;
+	BinaryTreeNode<T> right;
+
+	public BinaryTreeNode(T data) {
+		this.data = data;
+	}
+}
+***************/
+
+/**************
+ * Main function that we are using internally 
+ * 
+public static void main(String[] args) {
+		BinarySearchTree bst = new BinarySearchTree();
+		int choice, input;
+		while(true) {
+			choice = s.nextInt();
+			switch(choice) {
+				case 1 : 
+					input = s.nextInt();
+					bst.insertData(input);
+					break;
+				case 2 : 
+					input = s.nextInt();
+					bst.deleteData(input);
+					break;
+				case 3 : 
+					input = s.nextInt();
+					System.out.println(bst.search(input));
+					break;
+				default :
+					bst.printTree();
+					return;
+			}
+
+		}
+*******************/
+
+public class BinarySearchTree {
+	// Complete this class
+	
+    private BinaryTreeNode<Integer> root;
+    
+    private static boolean isPresent(BinaryTreeNode<Integer> node,int x){
+        if(node==null){
+            return false;
+        }
+        if(node.data==x){
+            return true;
+        }
+        
+        if(node.data>x){
+            return isPresent(node.left,x);
+        }else{
+            return isPresent(node.right,x);
+        }
+        
+        
+    }
+    public boolean search(int x){
+        return isPresent(root,x);
+    }
+    
+    private static BinaryTreeNode<Integer> insert(BinaryTreeNode<Integer> node,int x){
+        
+        if(node==null){
+            BinaryTreeNode<Integer> newNode=new BinaryTreeNode<Integer>(x);
+            
+            return newNode;
+                
+        }
+        
+        if(x<node.data){
+            node.left= insert(node.left,x);
+        }else{
+            node.right =insert(node.right,x);
+        }
+        
+        return node;
+    }
+    public void insertData(int x){
+        
+      root= insert(root,x);
+        
+    }
+    private static int minimum(BinaryTreeNode<Integer> node){
+        
+        if(node==null){
+            return Integer.MAX_VALUE;
+        }
+        
+        int minLeft=minimum(node.left);
+        int minRight=minimum(node.right);
+        
+        return Math.min(node.data,Math.min(minLeft,minRight));
+        
+        
+        
+    }
+    private static BinaryTreeNode<Integer> deleteData(BinaryTreeNode<Integer> node,int x){
+        
+        if(node==null){
+            return null;
+        }
+        else if(node.data<x){
+            node.right=deleteData(node.right,x);
+        }    
+        else if(node.data>x){
+            node.left=deleteData(node.left,x);
+        }else{
+            if(node.left==null &&  node.right==null){
+                return null;
+            }
+            else if(node.left!=null && node.right==null){
+                return node.left;
+            }
+            else if(node.left==null && node.right!=null){
+                return node.right;
+            }
+            else{
+                int minRight=minimum(node.right);
+                node.data=minRight;
+                node.right=deleteData(node.right,minRight);
+
+            }
+        }
+        
+        return node;
+    }
+    public void deleteData(int x){
+        
+        deleteData(root,x);
+    }
+    private static void PrintTreeElement(BinaryTreeNode<Integer> node){
+        if(node==null){
+            return;
+        }
+        System.out.print(node.data+":");
+        if(node.left!=null){
+            System.out.print("L:"+node.left.data+",");
+        }
+        if(node.right!=null){
+            System.out.print("R:"+node.right.data);
+        }
+        System.out.println();
+        PrintTreeElement(node.left);
+        PrintTreeElement(node.right);
+    }
+    public void printTree(){
+        PrintTreeElement(root);
+    }
+    
+}
