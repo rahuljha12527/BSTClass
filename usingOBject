@@ -1,0 +1,124 @@
+
+
+
+class BSTDeleteReturn{
+    BinaryTreeNode<Integer> root;
+    boolean deleted;
+    
+    public BSTDeleteReturn(BinaryTreeNode<Integer>root,boolean deleted){
+        this.root=root;
+        this.deleted = deleted;
+    }
+}
+public class BinarySearchTree {
+	// Complete this class
+    private  BinaryTreeNode<Integer> root;
+    
+    private static boolean isPrintHelper(BinaryTreeNode<Integer> node,int x){
+        if(node==null){
+            return false;
+        }
+        if(node.data==x){
+            return true;
+        }
+        if(x<node.data){
+            return isPrintHelper(node.left,x);
+        }else{
+            return isPrintHelper(node.right,x);
+        }
+    }
+    public boolean search(int x){
+        return isPrintHelper(root,x);
+    }
+    private static int minimum(BinaryTreeNode<Integer> node){
+        if(node==null){
+            return Integer.MAX_VALUE;
+        }
+        int minLeft=minimum(node.left);
+        int minRight=minimum(node.right);
+        int minValue=Math.min(node.data,Math.min(minLeft,minRight));
+        return minValue;
+    }
+    private static BinaryTreeNode<Integer> insert(BinaryTreeNode<Integer> node,int x){
+        if(node==null){
+            BinaryTreeNode<Integer> newRoot=new BinaryTreeNode<Integer>(x);
+            return newRoot;
+        }
+        if(x<node.data){
+            node.left=insert(node.left,x);
+        }
+        else{
+            node.right=insert(node.right,x);
+        }
+        return node;
+    }
+	public void insertData(int x){
+        root=insert(root,x);
+   
+    }
+    private static BSTDeleteReturn deleteDataHelper(BinaryTreeNode<Integer> root,int x){
+        if(root==null){
+            return new BSTDeleteReturn(null,false);
+        }
+        if(root.data<x){
+            BSTDeleteReturn output=deleteDataHelper(root.right,x);
+            root.right=output.root;
+            output.root=root;
+            return output;
+        }
+        if(root.data>x){
+            BSTDeleteReturn output=deleteDataHelper(root.left,x);
+            root.left=output.root;
+            output.root=root;
+            return output;
+        }
+        if(root.left==null && root.right==null){
+            return new BSTDeleteReturn(null,true);
+        }
+        if(root.left!=null &&root.right==null){
+           BSTDeleteReturn output=new BSTDeleteReturn(root.left,true);
+           // new BSTDeleteReturn(root.left,true);
+          return output;
+        }
+        if(root.right!=null && root.left==null){
+
+           //return new BSTDeleteReturn(root.right,true);
+          BSTDeleteReturn output=new BSTDeleteReturn(root.right,true);
+            return output;
+            
+        }
+        if(root.left!=null && root.right!=null){
+        int rightmin=minimum(root.right);
+        root.data=rightmin;
+        BSTDeleteReturn OutputRight=deleteDataHelper(root.right,rightmin);
+        root.right=OutputRight.root;
+       return new BSTDeleteReturn(root,true);
+        }
+         
+        return null;
+        }
+    public boolean deleteData(int x){
+        BSTDeleteReturn output=deleteDataHelper(root,x);
+        root=output.root;
+      
+        return output.deleted;
+    }
+    private static void printTreeHelper(BinaryTreeNode<Integer> node){
+        if(node==null){
+            return;
+        }
+        System.out.print(node.data+":");
+        if(node.left!=null){
+            System.out.print("L:"+node.left.data+",");
+        }
+        if(node.right!=null){
+            System.out.print("R:"+node.right.data);
+        }
+        System.out.println();
+        printTreeHelper(node.left);
+        printTreeHelper(node.right);
+    }
+    public  void printTree(){
+        printTreeHelper(root);
+    }
+}
